@@ -1,5 +1,8 @@
-# ...
+name = "tradingpro-api-staging"
+main = "src/index.js"
+compatibility_date = "2026-11-23"
+
 [[d1_databases]]
-binding = "db"
-database_id = "36f630c8-68f3-4575-83c4-f219830ac98d"
-# ...
+binding = "DB"
+database_name = "hassan-trading-pro-staging"
+database_id = "2e795c49-9ac7-49d5-b325-57f49dff2ee4"
