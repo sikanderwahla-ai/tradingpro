@@ -1,4 +1,4 @@
-name = 'hassan-trading-pro-staging'
+name = 'tradingpro'
 main = "src/index.js"
 compatibility_date = "2026-11-23"
 
