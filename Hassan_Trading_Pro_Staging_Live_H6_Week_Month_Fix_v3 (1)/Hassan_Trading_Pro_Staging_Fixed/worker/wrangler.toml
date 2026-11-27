@@ -1,9 +1,0 @@
-
-name = "hassan-trading-pro-staging"
-main = "src/index.js"
-compatibility_date = "2026-11-23"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "hassan-trading-pro-staging"
-database_id = "2e795c49-9ac7-49d5-b325-57f49dff2ee4"
