@@ -2,7 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hassan Trading Pro — SMC Trading Terminal</title>
+<title>TRADINGPRO — SMC Trading Terminal</title>
+<meta name="application-name" content="TRADINGPRO">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TRADINGPRO">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080d18">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/tradingpro.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/tradingpro.svg">
+
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Segoe+UI:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -804,6 +813,44 @@ body.wl-open .broker-api-drawer.open{right:362px}
   padding:8px 10px;border-radius:6px;background:#111620;border:1px solid #263144;
   font-size:11.5px;color:#cbd5e1;font-family:ui-monospace,Consolas,monospace
 }
+
+
+/* TRADINGPRO installable app + mobile terminal layout */
+#pwaInstallBtn{position:fixed;right:14px;bottom:14px;z-index:999999;border:1px solid #d9a441;border-radius:999px;padding:11px 16px;background:#e0a34c;color:#111827;font:800 13px 'Segoe UI',Arial,sans-serif;box-shadow:0 8px 26px #0009;cursor:pointer;display:none}
+#pwaInstallBtn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:760px){
+  body{height:100dvh;min-height:100dvh;overflow:hidden}
+  header{height:44px;min-height:44px;padding:0 7px;gap:5px}
+  .brand{font-size:12px;letter-spacing:0}
+  .top-left{gap:5px}
+  .top-right{gap:4px}
+  .conn-pill{font-size:9px;padding:3px 5px}
+  .symbols-drawer-btn{font-size:10px;padding:4px 6px}
+  .sub-toolbar{height:38px;min-height:38px;padding:0 5px;overflow-x:auto;justify-content:flex-start}
+  .tf-bar,.fav-tfs{flex-shrink:0}
+  .tf-btn{padding:5px 6px;font-size:11px}
+  .main-body{min-height:0}
+  .left-toolbar{width:36px;padding:4px 0;gap:2px}
+  .lt-btn{width:30px;height:31px}
+  .sidebar-toggle-pill{left:36px}
+  .chart-wrap{min-width:0}
+  .chart-hud{top:5px;left:5px;gap:3px;max-width:calc(100% - 75px)}
+  .hud-line{gap:4px;padding:3px 5px;flex-wrap:wrap}
+  .hud-title{font-size:11px}
+  .hud-ohlc,.bs-box{font-size:10px}
+  .hud-trade-log{max-width:100%;gap:3px}
+  .trd-badge{font-size:9px;padding:2px 4px}
+  .watermark-main{font-size:34px}
+  .watermark-sub{font-size:10px}
+  .chart-settings-modal{width:98vw;height:88dvh;max-height:88dvh}
+  .cs-sidebar{width:112px;padding:7px 4px}
+  .cs-nav{font-size:11px;padding:8px 6px;gap:5px}
+  .cs-content{padding:12px 10px}
+  .settings-modal{width:96vw;max-height:88dvh}
+  .lt-flyout{left:38px;width:min(245px,calc(100vw - 46px))}
+  #authLogout,#authOpen{right:8px;top:46px}
+}
+@media(display-mode:standalone){#pwaInstallBtn{display:none!important}}
 
 </style>
 <link rel="canonical" href="https://tradingpro.live/">
@@ -7006,5 +7053,38 @@ renderWatchlistDrawer();
 resizeCanvas();
 try { await loadHistory(); await connectHub(); } catch (e) { status('FEED ERROR'); }
 </script>
+
+<button id="pwaInstallBtn" type="button" aria-label="Install TRADINGPRO">⇩ Install TRADINGPRO</button>
+<script>
+(() => {
+  const installBtn = document.getElementById('pwaInstallBtn');
+  let installPrompt = null;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone || !installBtn) return;
+  if (isIOS) {
+    installBtn.style.display = 'block';
+    installBtn.textContent = '＋ Add TRADINGPRO';
+    installBtn.addEventListener('click', () => alert('Safari mein Share button tap karein, phir “Add to Home Screen” select karein.'));
+  }
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    installPrompt = event;
+    installBtn.style.display = 'block';
+  });
+  installBtn.addEventListener('click', async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    installBtn.style.display = 'none';
+  });
+  window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; installPrompt = null; });
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(err => console.warn('TRADINGPRO offline shell registration failed', err)));
+  }
+})();
+</script>
+
 </body>
 </html>
